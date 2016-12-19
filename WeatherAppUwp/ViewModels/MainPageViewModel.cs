@@ -88,7 +88,8 @@ namespace WeatherAppUwp.ViewModels
         
         public void AddCity()
         {
-            Items.Add(new ForecastItem(_forecastService, Query));
+            if (!string.IsNullOrEmpty(Query))
+                Items.Add(new ForecastItem(_forecastService, Query));
         }
 
         public void GotoSettings() =>

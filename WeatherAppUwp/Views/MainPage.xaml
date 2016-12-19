@@ -155,13 +155,9 @@
                                             ElementName=MainGrid}"
                                             CommandParameter="{Binding}"
                                             Text="Remove" />
-
                                 </MenuFlyout>
                             </FlyoutBase.AttachedFlyout>
-
-                            <RelativePanel 
-                                >
-                                
+                            <RelativePanel >
                                 <Button
                                     Command="{Binding RestartCommand}"
                                     Background="Transparent"
