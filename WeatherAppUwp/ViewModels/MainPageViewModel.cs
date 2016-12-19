@@ -1,6 +1,5 @@
 using Template10.Mvvm;
 using System.Collections.Generic;
-using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using WeatherAppUwp.Models;
@@ -20,10 +19,6 @@ namespace WeatherAppUwp.ViewModels
             _forecastService = new ForecastService();
             _citySearchService = new CitySearchService();
             Items = new ObservableCollection<ForecastItem>();
-            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
-            {
-                Items.Add(new ForecastItem(_forecastService, "Design Time"));
-            }
             PullDataFromDb();
         }
 
@@ -70,12 +65,12 @@ namespace WeatherAppUwp.ViewModels
 
         public ICommand RemoveCommand => new DelegateCommand<ForecastItem>(RemoveItem);
 
-        private void RemoveItem(ForecastItem obj)
+        private void RemoveItem(ForecastItem item)
         {
-            Items.Remove(obj);
-            if (obj.Pinned)
+            Items.Remove(item);
+            if (item.Pinned)
             {
-                obj.UnPin();
+                item.UnPin();
             }
         }
         
