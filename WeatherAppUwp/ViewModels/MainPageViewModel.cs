@@ -12,17 +12,33 @@ namespace WeatherAppUwp.ViewModels
     {
         public ObservableCollection<ForecastItem> Items { get; set; }
 
-
-        private ForecastService _forecastService;
-        private CitySearchService _citySearchService;
+        private readonly ForecastService _forecastService;
+        private readonly CitySearchService _citySearchService;
         public MainPageViewModel()
         {
+            
             _forecastService = new ForecastService();
             _citySearchService = new CitySearchService();
             Items = new ObservableCollection<ForecastItem>();
-           
-            Items.Add(new ForecastItem(_forecastService, "London"));
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+            {
+                Items.Add(new ForecastItem(_forecastService, "Design Time"));
+            }
+            PullDataFromDb();
         }
+
+        private void PullDataFromDb()
+        {
+            using (var db = new ForecastContext())
+            {
+                db.Database.EnsureCreated();
+                foreach (var item in db.Items)
+                {
+                    Items.Add(new ForecastItem(_forecastService, item));
+                }
+            }
+        }
+
 
         private string _query;
         private List<string> _cities;
@@ -49,7 +65,7 @@ namespace WeatherAppUwp.ViewModels
 
         private async void GetPredictions()
         {
-            Cities = await _citySearchService.GetCities(_query);
+            Cities = await _citySearchService.GetCitiesAsync(_query);
         }
 
         public ICommand RemoveCommand => new DelegateCommand<ForecastItem>(RemoveItem);
@@ -57,6 +73,10 @@ namespace WeatherAppUwp.ViewModels
         private void RemoveItem(ForecastItem obj)
         {
             Items.Remove(obj);
+            if (obj.Pinned)
+            {
+                obj.UnPin();
+            }
         }
         
         

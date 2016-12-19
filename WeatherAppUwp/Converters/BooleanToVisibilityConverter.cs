@@ -9,7 +9,9 @@ namespace WeatherAppUwp.Converters
         public bool Inverted { get; set; }
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            return (value is bool && (bool)value & !Inverted) ? Visibility.Visible : Visibility.Collapsed;
+            var val = (value is bool && (bool) value);
+            if (Inverted) val = !val;
+            return (val) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

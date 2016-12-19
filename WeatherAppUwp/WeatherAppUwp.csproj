@@ -99,6 +99,8 @@
     </Compile>
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\StringFormatConverter.cs" />
+    <Compile Include="Models\ForecastDbitem.cs" />
+    <Compile Include="Models\ForecastContext.cs" />
     <Compile Include="Models\GoogleData.cs" />
     <Compile Include="Models\NotifyTask.cs" />
     <Compile Include="Models\Notifier.cs" />
@@ -136,6 +138,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\pinned.png" />
     <Content Include="Assets\refresh.png" />
     <Content Include="Help.htm" />
     <Content Include="Properties\Default.rd.xml" />

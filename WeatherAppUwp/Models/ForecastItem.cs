@@ -1,7 +1,9 @@
 using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
+using System.Linq;
 using System.Windows.Input;
+using Windows.UI.Popups;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Template10.Mvvm;
 using WeatherAppUwp.Services;
 
@@ -12,13 +14,7 @@ namespace WeatherAppUwp.Models
         public ForecastItem()
         {
         }
-        public ForecastItem(string place, int degrees, string condition)
-        {
-            _place = place;
-            _degrees = degrees;
-            _condition = condition;
-        }
-
+       
         private readonly ForecastService _forecastService;
         private bool _loading;
         private string _place;
@@ -26,12 +22,34 @@ namespace WeatherAppUwp.Models
         private string _condition;
         private bool _error;
         private string _imageUrl;
-
+        private bool _pinned;
+        private int _dbId;
+        /// <summary>
+        /// For a new entries from the view
+        /// </summary>
+        /// <param name="forecastService"></param>
+        /// <param name="query"></param>
         public ForecastItem(ForecastService forecastService, string query)
         {
             _forecastService = forecastService;
             _place = query;
             RequestForecast();
+        }
+        /// <summary>
+        /// For database pulling 
+        /// </summary>
+        /// <param name="forecastService"></param>
+        /// <param name="item">dbSet item</param>
+        public ForecastItem(ForecastService forecastService, ForecastDbitem item)
+        {
+            _error = true;
+            _forecastService = forecastService;
+            Pinned = true;
+            _dbId = item.ForecastDbitemId;
+            Place = item.Place;
+            Degrees = item.Degrees;
+            Condition = item.Condition;
+            ImageUrl = item.ImageUrl;
         }
 
         private async void RequestForecast()
@@ -40,7 +58,7 @@ namespace WeatherAppUwp.Models
             {
                 Loading = true;
                 Error = false;
-                var channel = await _forecastService.GetWeather(_place);
+                var channel = await _forecastService.GetWeatherForPlaceAsync(_place);
                 if (channel == null)
                     Error = true;
                 else
@@ -57,14 +75,13 @@ namespace WeatherAppUwp.Models
             }
         }
 
-        private const string ImageUrlBase = "http://l.yimg.com/a/i/us/we/52/{0}.gif";
 
         private void ParseForecast(Channel channel)
         {
             Place = $"{channel.location.city}, {channel.location.country}";
             Degrees = Convert.ToInt32(channel.item.condition.temp);
             Condition = channel.item.condition.text;
-            ImageUrl = String.Format(ImageUrlBase, channel.item.condition.code);
+            ImageUrl = _forecastService.GetImageUrlFromCode(channel.item.condition.code);
         }
 
         public bool Error
@@ -85,6 +102,12 @@ namespace WeatherAppUwp.Models
                 if (value) Condition = "Loading";
                 Set(ref _loading, value);
             }
+        }
+
+        public bool Pinned
+        {
+            get { return _pinned; }
+            set { Set(ref _pinned, value); }
         }
 
         public string Place
@@ -112,6 +135,55 @@ namespace WeatherAppUwp.Models
         }
 
         public ICommand RestartCommand => new DelegateCommand(RequestForecast);
+
+        public ICommand PinCommand => new DelegateCommand(Pin);
+
+        public ICommand UnPinCommand => new DelegateCommand(UnPin);
+
+        public void UnPin()
+        {
+            if (Pinned)
+            {
+                using (var db = new ForecastContext())
+                {
+                    db.Database.EnsureCreated();
+                    var item = db.Items.First(x => x.ForecastDbitemId == _dbId);
+                    if (item != null)
+                    {
+                        db.Items.Remove(item);
+                        db.SaveChanges();
+                    }
+                }
+                Pinned = false;
+            }
+        }
+
+        private void Pin()
+        {
+            try
+            {
+                using (var db = new ForecastContext())
+                {
+                    db.Database.EnsureCreated();
+                    var item = new ForecastDbitem
+                    {
+                        Place = Place,
+                        Degrees = Degrees,
+                        Condition = Condition,
+                        ImageUrl = ImageUrl
+                    };
+                    db.Add(item);
+                    db.SaveChanges();
+                    db.Entry(item).GetDatabaseValues();
+                    _dbId = item.ForecastDbitemId;
+                }
+                Pinned = true;
+            }
+            catch (Exception exception)
+            {
+                new MessageDialog(exception.Message).ShowAsync();
+            }
+        }
     }
 
 

@@ -79,7 +79,7 @@
                        RelativePanel.Below="pageHeader">
 
             <AutoSuggestBox
-                Header="Parameter to pass"
+                Header="Type city name here"
                 x:Name="parameterResizer"
                 Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 ItemsSource="{Binding Cities, Mode=TwoWay}">
@@ -90,13 +90,7 @@
                     </Behaviors:KeyBehavior>
                 </Interactivity:Interaction.Behaviors>
             </AutoSuggestBox>
-            <!--<TextBox
-                x:Name="parameterResizer"
-                MinWidth="150"
-                         MinHeight="62"
-                         Header="Parameter to pass"
-                         Text="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         TextWrapping="Wrap"/>-->
+            
             <Button x:Name="submitButton"
                     Click="{x:Bind ViewModel.AddCity}"
                     Content="Add"
@@ -105,6 +99,7 @@
 
             <TextBlock x:Name="stateTextBox"
                        Margin="16,16,0,0"
+                       Visibility="Collapsed"
                        RelativePanel.AlignLeftWith="parameterResizer"
                        RelativePanel.Below="parameterResizer"
                        Text="Current Visual State" />
@@ -135,6 +130,18 @@
                                             Command="{Binding RestartCommand}"
                                             Text="Refresh"/>
                                     <MenuFlyoutItem 
+                                            Visibility="{Binding Pinned, 
+                                                Mode=TwoWay,        
+                                                Converter={StaticResource InvertedFromBool}}"
+                                            Command="{Binding PinCommand}"
+                                            Text="Pin"/>
+                                    <MenuFlyoutItem 
+                                            Visibility="{Binding Pinned, 
+                                                Mode=TwoWay,        
+                                                Converter={StaticResource FromBool}}"
+                                            Command="{Binding UnPinCommand}"
+                                            Text="Unpin"/>
+                                    <MenuFlyoutItem 
                                             Command="{Binding DataContext.RemoveCommand,
                                             ElementName=MainGrid}"
                                             CommandParameter="{Binding}"
@@ -164,6 +171,13 @@
                                     Height="30"
                                     Width="30"
                                     />
+                                <Image 
+                                    Visibility="{Binding Pinned, Converter={StaticResource FromBool}}"
+                                    Source="../Assets/pinned.png"
+                                    Height="20"
+                                    Width="20"
+                                    RelativePanel.AlignTopWith="celsiusBlock"
+                                    RelativePanel.AlignRightWithPanel="True"/>
                                 <TextBlock 
                                     x:Name="placeBlock"
                                     RelativePanel.AlignHorizontalCenterWithPanel="True"
