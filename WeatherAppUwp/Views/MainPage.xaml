@@ -6,7 +6,6 @@
       xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
       xmlns:controls="using:Template10.Controls"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="using:WeatherAppUwp.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:converters="using:WeatherAppUwp.Converters"
       xmlns:vm="using:WeatherAppUwp.ViewModels"
@@ -96,6 +95,11 @@
                     Content="Add"
                     RelativePanel.AlignBottomWith="parameterResizer"
                     RelativePanel.RightOf="parameterResizer" />
+            <Button RelativePanel.RightOf="submitButton"
+                    Margin="10,0"
+                    Command="{Binding RefreshAllCommand}"
+                    RelativePanel.AlignTopWith="submitButton"> Refresh all
+            </Button>
 
             <TextBlock x:Name="stateTextBox"
                        Margin="16,16,0,0"
@@ -112,12 +116,17 @@
                 SelectionMode="None"
                 ItemsSource="{Binding Items}"
                 RelativePanel.Below="stateTextBox">
-                
+
+                <GridView.ItemContainerStyle>
+                    <Style TargetType="GridViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </GridView.ItemContainerStyle>
                 <GridView.ItemTemplate>
                     <DataTemplate x:DataType="data:ForecastItem">
                         <Border 
                             Background="Transparent"
-                            Width="170"
+                            MinWidth="170"
                             Holding="ItemContext"
                             RightTapped="ItemContext"
                             Height="110"

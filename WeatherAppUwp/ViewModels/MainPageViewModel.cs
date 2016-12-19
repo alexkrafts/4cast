@@ -1,6 +1,7 @@
 using Template10.Mvvm;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using WeatherAppUwp.Models;
 using WeatherAppUwp.Services;
@@ -64,6 +65,16 @@ namespace WeatherAppUwp.ViewModels
         }
 
         public ICommand RemoveCommand => new DelegateCommand<ForecastItem>(RemoveItem);
+
+        public ICommand RefreshAllCommand => new DelegateCommand(RefreshAll);
+        
+        private void RefreshAll()
+        {
+            foreach (var item in Items.Where(item => !item.Loading))
+            {
+                item.RequestForecast();
+            }
+        }
 
         private void RemoveItem(ForecastItem item)
         {

@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using Windows.UI.Popups;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Template10.Mvvm;
 using WeatherAppUwp.Services;
 
@@ -51,8 +50,10 @@ namespace WeatherAppUwp.Models
             Condition = item.Condition;
             ImageUrl = item.ImageUrl;
         }
-
-        private async void RequestForecast()
+        /// <summary>
+        /// Call forecast service to update the data
+        /// </summary>
+        public async void RequestForecast()
         {
             try
             {
@@ -103,7 +104,7 @@ namespace WeatherAppUwp.Models
                 Set(ref _loading, value);
             }
         }
-
+        
         public bool Pinned
         {
             get { return _pinned; }
