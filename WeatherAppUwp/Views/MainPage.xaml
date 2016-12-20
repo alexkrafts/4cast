@@ -128,8 +128,6 @@
                         <Border 
                             Background="Transparent"
                             MinWidth="170"
-                            Holding="ItemContext"
-                            RightTapped="ItemContext"
                             Height="110"
                             BorderBrush="LightGray"
                             Padding="3"
@@ -158,6 +156,11 @@
                                             Text="Remove" />
                                 </MenuFlyout>
                             </FlyoutBase.AttachedFlyout>
+                            <Interactivity:Interaction.Behaviors>
+                                <Core:EventTriggerBehavior EventName="Tapped">
+                                    <Behaviors:OpenFlyoutAction/>
+                                </Core:EventTriggerBehavior>
+                            </Interactivity:Interaction.Behaviors>
                             <RelativePanel >
                                 <Button
                                     Command="{Binding RestartCommand}"
