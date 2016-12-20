@@ -1,4 +1,4 @@
-<Page x:Class="WeatherAppUwp.Views.MainPage"
+﻿<Page x:Class="WeatherAppUwp.Views.MainPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:Behaviors="using:Template10.Behaviors"
@@ -7,15 +7,14 @@
       xmlns:controls="using:Template10.Controls"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:converters="using:WeatherAppUwp.Converters"
       xmlns:vm="using:WeatherAppUwp.ViewModels"
       xmlns:data="using:WeatherAppUwp.Models"
+      xmlns:pullreq="using:AmazingPullToRefresh.Controls"
+      xmlns:converters1="using:Template10.Converters"
       mc:Ignorable="d">
 
     <Page.Resources>
-        <converters:BooleanToVisibilityConverter x:Key="FromBool"/>
-        <converters:BooleanToVisibilityConverter x:Key="InvertedFromBool" Inverted="True"/>
-        <converters:StringFormatConverter x:Key="StringFormatConverter" StringFormat=" {0}*" />
+        <converters1:StringFormatConverter x:Key="StringFormatConverter" Format="{}{0:0°}"/>
     </Page.Resources>
     <Page.DataContext>
         <vm:MainPageViewModel x:Name="ViewModel" />
@@ -116,7 +115,9 @@
                 SelectionMode="None"
                 ItemsSource="{Binding Items}"
                 RelativePanel.Below="stateTextBox">
-
+                <pullreq:PullToRefreshAdorner.Extender>
+                    <pullreq:PullToRefreshExtender RefreshRequested="{x:Bind ViewModel.RefreshAll}" />
+                </pullreq:PullToRefreshAdorner.Extender>
                 <GridView.ItemContainerStyle>
                     <Style TargetType="GridViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />

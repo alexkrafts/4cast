@@ -67,8 +67,8 @@ namespace WeatherAppUwp.ViewModels
         public ICommand RemoveCommand => new DelegateCommand<ForecastItem>(RemoveItem);
 
         public ICommand RefreshAllCommand => new DelegateCommand(RefreshAll);
-        
-        private void RefreshAll()
+
+        public void RefreshAll()
         {
             foreach (var item in Items.Where(item => !item.Loading))
             {

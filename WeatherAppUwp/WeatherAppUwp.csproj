@@ -97,8 +97,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Converters\StringFormatConverter.cs" />
     <Compile Include="Models\ForecastDbitem.cs" />
     <Compile Include="Models\ForecastContext.cs" />
     <Compile Include="Models\GoogleData.cs" />

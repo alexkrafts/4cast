@@ -1,6 +1,7 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using AmazingPullToRefresh.Controls;
 
 namespace WeatherAppUwp.Views
 {
@@ -20,5 +21,6 @@ namespace WeatherAppUwp.Views
             FlyoutBase flyoutBase = FlyoutBase.GetAttachedFlyout(senderElement);
             flyoutBase.ShowAt(senderElement);
         }
+        
     }
 }
